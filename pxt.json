@@ -1,0 +1,17 @@
+{
+    "name": "m-BitBeam",
+    "version": "0.1",
+    "description": "Ovládání mozku pro stavebnici m-BitBeam",
+    "license": "bekousek",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "driver.ts",
+        "README.md"
+    ],
+    "testFiles": [
+      "tests.ts"
+    ],
+    "public": true
+}
