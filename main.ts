@@ -76,4 +76,29 @@ namespace mBitBeam {
     function calcOffset(freq: number, timeMs: number): number {
         return ((timeMs * CHIP_RESOLUTION * freq) / 1000)
     }
+    /**
+ * Inicializuje čip PCA9685 na adrese 0x40 s frekvencí 50 Hz
+ */
+//% block="inicializuj čip PCA9685"
+export function initChip(): void {
+    writeRegister(0x00, 0x00) // MODE1 register – wake
+    setPWMFreq(50)
+}
+    function setPWMFreq(freq: number) {
+    const prescaleval = 25000000 / (4096 * freq) - 1
+    const prescale = Math.floor(prescaleval + 0.5)
+    const oldmode = readRegister(0x00)
+    const newmode = (oldmode & 0x7F) | 0x10
+    writeRegister(0x00, newmode)
+    writeRegister(0xFE, prescale)
+    writeRegister(0x00, oldmode)
+    control.waitMicros(5000)
+    writeRegister(0x00, oldmode | 0x80)
+}
+
+function readRegister(register: number): number {
+    pins.i2cWriteNumber(CHIP_ADDRESS, register, NumberFormat.UInt8BE)
+    return pins.i2cReadNumber(CHIP_ADDRESS, NumberFormat.UInt8BE)
+}
+
 }
