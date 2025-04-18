@@ -1,17 +1,13 @@
 {
-    "name": "m-BitBeam",
-    "version": "0.1",
-    "description": "Ovládání mozku pro stavebnici m-BitBeam",
-    "license": "bekousek",
-    "dependencies": {
-        "core": "*"
-    },
-    "files": [
-        "driver.ts",
-        "README.md"
-    ],
-    "testFiles": [
-      "tests.ts"
-    ],
-    "public": true
+  "name": "mbitbeam",
+  "version": "0.0.1",
+  "description": "Rozšíření pro ovládání PCA9685 a H-můstků pro stavebnici mBitBeam",
+  "dependencies": {
+    "core": "*"
+  },
+  "files": [
+    "driver.ts"
+  ],
+  "testFiles": [],
+  "public": true
 }
