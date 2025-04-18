@@ -3,7 +3,7 @@
  * mBitBeam - vlastní ovladač pro PCA9685 a další funkce
  */
 //% weight=100 color=#0fbc11 icon=""
-namespace PCA9685 {
+namespace mBitBeam {
 
     /**
      * Testovací funkce pro ověření funkčnosti rozšíření
