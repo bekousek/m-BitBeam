@@ -1,6 +1,6 @@
 {
   "name": "mbitbeam-pca9685",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Rozšíření pro ovládání PCA9685 a H-můstků pro mBitBeam",
   "dependencies": {
     "core": "*"
