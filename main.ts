@@ -616,7 +616,7 @@ let jednotka: Jednotka = Jednotka.cm
     /**
      * Inicializuje senzor barev TCS34725
      */
-    //% group="TCS34725"
+    //% group="RGB senzor"
     //% block="inicializuj senzor barev"
     export function initTCS34725(): void {
         const id = i2cReadTCS(TCS34725_ID)
@@ -634,7 +634,7 @@ let jednotka: Jednotka = Jednotka.cm
     /**
      * Načte hodnoty RGB z čidla
      */
-    //% group="TCS34725"
+    //% group="RGB senzor"
     //% block="načti barvu"
     export function nactiBarvu(): void {
         if (!tcsInitialized) initTCS34725()
@@ -647,7 +647,7 @@ let jednotka: Jednotka = Jednotka.cm
     /**
      * Vrátí hodnotu červené složky (0–65535)
      */
-    //% group="TCS34725"
+    //% group="RGB senzor"
     //% block="hodnota červené"
     export function hodnotaCervene(): number {
         return red
@@ -656,7 +656,7 @@ let jednotka: Jednotka = Jednotka.cm
     /**
      * Vrátí hodnotu zelené složky (0–65535)
      */
-    //% group="TCS34725"
+    //% group="RGB senzor"
     //% block="hodnota zelené"
     export function hodnotaZelene(): number {
         return green
@@ -665,7 +665,7 @@ let jednotka: Jednotka = Jednotka.cm
     /**
      * Vrátí hodnotu modré složky (0–65535)
      */
-    //% group="TCS34725"
+    //% group="RGB senzor"
     //% block="hodnota modré"
     export function hodnotaModre(): number {
         return blue
@@ -674,7 +674,7 @@ let jednotka: Jednotka = Jednotka.cm
     /**
      * Vrátí název barvy na základě RGB hodnot
      */
-    //% group="TCS34725"
+    //% group="RGB senzor"
     //% block="rozpoznaná barva"
     export function rozpoznanaBarva(): string {
         const r = red
