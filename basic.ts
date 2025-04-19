@@ -4,7 +4,7 @@ enum MBRole {
     //% block="mozek"
     Brain
 }
-//% weight=100 color=#000000 icon="\uf013" block="m-Bit základní"
+//% weight=101 color=#000000 icon="\uf013" block="m-Bit základní"
 namespace mbitbasic {
 
     let currentRole: MBRole = MBRole.Controller
