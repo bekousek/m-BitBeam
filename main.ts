@@ -435,20 +435,16 @@ export function nastavKontinualniServo(servo: ServoNum = 1, speed: number): void
         write(chipAddress, modeRegister1, restart)
     }
 
-    /**
-     * Used to reset the chip, will cause the chip to do a full reset and turn off all outputs.
-     * @param chipAddress [64-125] The I2C address of your PCA9685; eg: 64
-     */
-    //% block
-    export function reset(chipAddress: number = 0x40): void {
-        return init(chipAddress, getChipConfig(chipAddress).freq);
-    }
+  /**
+ * Provede úplný reset čipu PCA9685 a vypne všechny výstupy pro serva
+ */
+//% block="resetuj čip pro serva"
+export function reset(): void {
+    const chipAddress = 0x40
+    return init(chipAddress, getChipConfig(chipAddress).freq);
+}
 
-    /**
-     * Used to reset the chip, will cause the chip to do a full reset and turn off all outputs.
-     * @param hexAddress The hex address to convert to decimal; eg: 0x40
-     */
-    //% block
+
     export function chipAddress(hexAddress: string): number {
         hexAddress = stripHexPrefix(hexAddress)
         let dec = 0
