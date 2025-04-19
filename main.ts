@@ -287,7 +287,7 @@ namespace mBitBeam {
         pins.i2cWriteBuffer(chipAddress, buffer, false)
     }
 
-    export function getChipConfig(address: number): ChipConfig {
+    function getChipConfig(address: number): ChipConfig {
         for (let i = 0; i < chips.length; i++) {
             if (chips[i].address === address) {
                 debug(`Returning chip ${i}`)
@@ -324,7 +324,7 @@ namespace mBitBeam {
      * @param degrees The degrees (0-180) to move the servo to
      */
     //% block
-    export function setServoPosition(servoNum: ServoNum = 1, degrees: number, chipAddress: number = 0x40): void {
+    function setServoPosition(servoNum: ServoNum = 1, degrees: number, chipAddress: number = 0x40): void {
         const chip = getChipConfig(chipAddress)
         servoNum = Math.max(1, Math.min(16, servoNum))
         degrees = Math.max(0, Math.min(180, degrees))
@@ -388,7 +388,7 @@ export function nastavKontinualniServo(servo: ServoNum = 1, speed: number): void
      * @param midTimeCs The mid (90 degree for regular or off position if continuous rotation) for the servo; eg: 15
      */
     //% block advanced=true
-    export function setServoLimits(servoNum: ServoNum = 1, minTimeCs: number = 5, maxTimeCs: number = 2.5, midTimeCs: number = -1, chipAddress: number = 0x40): void {
+    function setServoLimits(servoNum: ServoNum = 1, minTimeCs: number = 5, maxTimeCs: number = 2.5, midTimeCs: number = -1, chipAddress: number = 0x40): void {
         const chip = getChipConfig(chipAddress)
         servoNum = Math.max(1, Math.min(16, servoNum))
         minTimeCs = Math.max(0, minTimeCs)
@@ -406,7 +406,7 @@ export function nastavKontinualniServo(servo: ServoNum = 1, speed: number): void
      * @param freq [40-1000] Frequency (40-1000) in hertz to run the clock cycle at; eg: 50
      */
     //% block advanced=true
-    export function init(chipAddress: number = 0x40, newFreq: number = 50) {
+    function init(chipAddress: number = 0x40, newFreq: number = 50) {
         debug(`Init chip at address ${chipAddress} to ${newFreq}Hz`)
         const buf = pins.createBuffer(2)
         const freq = (newFreq > 1000 ? 1000 : (newFreq < 40 ? 40 : newFreq))
@@ -432,16 +432,17 @@ export function nastavKontinualniServo(servo: ServoNum = 1, speed: number): void
      * @param chipAddress [64-125] The I2C address of your PCA9685; eg: 64
      */
     //% block
-    export function reset(chipAddress: number = 0x40): void {
-        return init(chipAddress, getChipConfig(chipAddress).freq);
-    }
+  export function reset(): void {
+    const chipAddress = 0x40
+    return init(chipAddress, getChipConfig(chipAddress).freq);
+}
 
     /**
      * Used to reset the chip, will cause the chip to do a full reset and turn off all outputs.
      * @param hexAddress The hex address to convert to decimal; eg: 0x40
      */
     //% block
-    export function chipAddress(hexAddress: string): number {
+    function chipAddress(hexAddress: string): number {
         hexAddress = stripHexPrefix(hexAddress)
         let dec = 0
         let lastidx = 0
@@ -457,7 +458,7 @@ export function nastavKontinualniServo(servo: ServoNum = 1, speed: number): void
         return dec
     }
 
-    export function setDebug(debugEnabled: boolean): void {
+    function setDebug(debugEnabled: boolean): void {
         _DEBUG = debugEnabled
     }
 }
