@@ -353,7 +353,7 @@ namespace mBitBeam {
  * @param servo Servo, které chceme natočit; eg: Servo1
  * @param uhel Úhel natočení v rozsahu 0–180°; eg: 90
  */
-//% block="nastav servo $servo na úhel $uhel °"
+//% block="nastav polohové servo (180°) $servo na úhel $uhel °"
 //% uhel.min=0 uhel.max=180 uhel.defl=90
 export function nastavPolohoveServo(servo: ServoNum = 1, uhel: number): void {
     const chipAddress = 0x40
