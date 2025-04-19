@@ -581,5 +581,124 @@ let jednotka: Jednotka = Jednotka.cm
 
 
 
+        const TCS34725_ADDRESS = 0x29
+    const TCS34725_COMMAND_BIT = 0x80
+    const TCS34725_ENABLE = 0x00
+    const TCS34725_ENABLE_PON = 0x01
+    const TCS34725_ENABLE_AEN = 0x02
+    const TCS34725_ATIME = 0x01
+    const TCS34725_CONTROL = 0x0F
+    const TCS34725_ID = 0x12
+    const TCS34725_CDATAL = 0x14
+
+    let tcsInitialized = false
+    let red = 0
+    let green = 0
+    let blue = 0
+
+    function i2cWriteTCS(reg: number, value: number) {
+        let buf = pins.createBuffer(2)
+        buf[0] = TCS34725_COMMAND_BIT | reg
+        buf[1] = value
+        pins.i2cWriteBuffer(TCS34725_ADDRESS, buf, false)
+    }
+
+    function i2cReadTCS(reg: number): number {
+        pins.i2cWriteNumber(TCS34725_ADDRESS, TCS34725_COMMAND_BIT | reg, NumberFormat.UInt8BE, false)
+        return pins.i2cReadNumber(TCS34725_ADDRESS, NumberFormat.UInt8LE, false)
+    }
+
+    function i2cRead16TCS(reg: number): number {
+        pins.i2cWriteNumber(TCS34725_ADDRESS, TCS34725_COMMAND_BIT | reg, NumberFormat.UInt8BE, false)
+        return pins.i2cReadNumber(TCS34725_ADDRESS, NumberFormat.UInt16LE, false)
+    }
+
+    /**
+     * Inicializuje senzor barev TCS34725
+     */
+    //% group="TCS34725"
+    //% block="inicializuj senzor barev"
+    export function initTCS34725(): void {
+        const id = i2cReadTCS(TCS34725_ID)
+        if (id != 0x44) return
+
+        i2cWriteTCS(TCS34725_ENABLE, TCS34725_ENABLE_PON)
+        basic.pause(3)
+        i2cWriteTCS(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN)
+        i2cWriteTCS(TCS34725_ATIME, 0xFF) // integrační čas
+        i2cWriteTCS(TCS34725_CONTROL, 0x00) // zesílení
+
+        tcsInitialized = true
+    }
+
+    /**
+     * Načte hodnoty RGB z čidla
+     */
+    //% group="TCS34725"
+    //% block="načti barvu"
+    export function nactiBarvu(): void {
+        if (!tcsInitialized) initTCS34725()
+
+        red = i2cRead16TCS(TCS34725_CDATAL + 2)
+        green = i2cRead16TCS(TCS34725_CDATAL + 4)
+        blue = i2cRead16TCS(TCS34725_CDATAL + 6)
+    }
+
+    /**
+     * Vrátí hodnotu červené složky (0–65535)
+     */
+    //% group="TCS34725"
+    //% block="hodnota červené"
+    export function hodnotaCervene(): number {
+        return red
+    }
+
+    /**
+     * Vrátí hodnotu zelené složky (0–65535)
+     */
+    //% group="TCS34725"
+    //% block="hodnota zelené"
+    export function hodnotaZelene(): number {
+        return green
+    }
+
+    /**
+     * Vrátí hodnotu modré složky (0–65535)
+     */
+    //% group="TCS34725"
+    //% block="hodnota modré"
+    export function hodnotaModre(): number {
+        return blue
+    }
+
+    /**
+     * Vrátí název barvy na základě RGB hodnot
+     */
+    //% group="TCS34725"
+    //% block="rozpoznaná barva"
+    export function rozpoznanaBarva(): string {
+        const r = red
+        const g = green
+        const b = blue
+
+        if (r > 200 && g < 100 && b < 100) return "červená"
+        if (r < 100 && g > 200 && b < 100) return "zelená"
+        if (r < 100 && g < 100 && b > 200) return "modrá"
+        if (r > 200 && g > 200 && b < 100) return "žlutá"
+        if (r > 200 && g < 100 && b > 200) return "purpurová"
+        if (r < 100 && g > 200 && b > 200) return "tyrkysová"
+        if (r > 180 && g > 180 && b > 180) return "bílá"
+        if (r < 50 && g < 50 && b < 50) return "černá"
+        if (r > 150 && g > 100 && b < 100) return "oranžová"
+        if (r > 150 && g < 50 && b < 50) return "tmavě červená"
+        if (r < 50 && g > 150 && b < 50) return "tmavě zelená"
+        if (r < 50 && g < 50 && b > 150) return "tmavě modrá"
+
+        return "neznámá"
+    }
+
+
+    
+
     
 }
