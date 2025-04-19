@@ -615,6 +615,7 @@ let jednotka: Jednotka = Jednotka.cm
         return pins.i2cReadNumber(TCS34725_ADDRESS, NumberFormat.UInt16LE, false)
     }
 
+    
     /**
      * Inicializuje senzor barev TCS34725
      */
@@ -707,16 +708,44 @@ let jednotka: Jednotka = Jednotka.cm
         if (r > g && g > b && r > 100 && g > 70 && b < 50) return "hnědá"
         return "černá"
     }
+export enum BarvaRozpoznana {
+    //% block="červená"
+    Cervena,
+    //% block="zelená"
+    Zelena,
+    //% block="modrá"
+    Modra,
+    //% block="žlutá"
+    Zluta,
+    //% block="fialová"
+    Fialova,
+    //% block="tyrkysová"
+    Tyrkysova,
+    //% block="bílá"
+    Bila,
+    //% block="černá"
+    Cerna,
+    //% block="oranžová"
+    Oranzova,
+    //% block="šedá"
+    Seda,
+    //% block="hnědá"
+    Hneda
+}
 
-    /**
-     * Blok podmínky: pokud barva je...
-     * @param barva text s názvem barvy; eg: "červená"
-     */
-    //% group="RGB senzor"
-    //% block="pokud rozpoznaná barva je %barva"
-    export function jeBarva(barva: string): boolean {
-        return posledniBarva == barva
-    }
+    
+  /**
+ * Podmínkový blok: pokud rozpoznaná barva je (z výběru)
+ */
+//% group="RGB senzor"
+//% block="rozpoznaná barva je %barva"
+export function jeBarva(barva: BarvaRozpoznana): boolean {
+    const mapovani = [
+        "červená", "zelená", "modrá", "žlutá", "fialová", "tyrkysová",
+        "bílá", "černá", "oranžová", "šedá", "hnědá"
+    ]
+    return posledniBarva == mapovani[barva]
+}
 
     
 
