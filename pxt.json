@@ -1,6 +1,6 @@
 {
   "name": "m-BitBeam",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Rozšíření pro ovládání robotické stavebnice m-BitBeam",
   "dependencies": {
     "core": "*",
