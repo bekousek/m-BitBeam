@@ -522,6 +522,64 @@ export function reset(): void {
         basic.pause(sekundy * 1000)
         otacejMotor(motor, smer, 0)
     }
-}
 
+
+
+
+    let trigPin: DigitalPin = DigitalPin.P1
+    let echoPin: DigitalPin = DigitalPin.P2
+    let jednotka: Jednotka = Jednotka.cm
+
+    export enum Jednotka {
+        //% block="centimetry"
+        cm,
+        //% block="milimetry"
+        mm,
+        //% block="mikrosekundy"
+        us
+    }
+
+    /**
+     * Nastaví sonar (trig, echo a jednotku měření)
+     * @param trig výstupní pin
+     * @param echo vstupní pin
+     * @param jednotka jednotka výsledku; eg: Jednotka.cm
+     */
+    //% group="Sonar"
+    //% block="nastav sonar trig %trig echo %echo jednotka %jednotka"
+    export function nastavSonar(trig: DigitalPin, echo: DigitalPin, jednotkaNova: Jednotka): void {
+        trigPin = trig
+        echoPin = echo
+        jednotka = jednotkaNova
+    }
+
+    /**
+     * Získá aktuální vzdálenost ze sonaru v nastavené jednotce
+     */
+    //% group="Sonar"
+    //% block="vzdálenost"
+    export function vzdalenost(): number {
+        pins.setPull(echoPin, PinPull.PullNone)
+        pins.digitalWritePin(trigPin, 0)
+        control.waitMicros(2)
+        pins.digitalWritePin(trigPin, 1)
+        control.waitMicros(10)
+        pins.digitalWritePin(trigPin, 0)
+
+        const d = pins.pulseIn(echoPin, PulseValue.High, 25000) // max. 25 ms = ~4 m
+
+        if (d == 0) return 0
+
+        switch (jednotka) {
+            case Jednotka.cm: return Math.idiv(d, 58)
+            case Jednotka.mm: return Math.idiv(d * 10, 58)
+            case Jednotka.us: return d
+            default: return -1
+        }
+    }
+
+
+
+
+    
 }
