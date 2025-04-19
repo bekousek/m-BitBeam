@@ -1,8 +1,8 @@
 /**
- * mBitBeam
+ * Bloky pro ovládání serva
  */
-//% weight=100 color=#000000 icon=""
-namespace mBitBeam {
+//% weight=100 color=#000000 icon="" block="Serva"
+namespace mBitBeamServa {
     let _DEBUG: boolean = false
     const debug = (msg: string) => {
         if (_DEBUG === true) {
@@ -353,7 +353,7 @@ namespace mBitBeam {
  * @param servo Servo, které chceme natočit; eg: Servo1
  * @param uhel Úhel natočení v rozsahu 0–180°; eg: 90
  */
-//% block="nastav polohové servo (180°) $servo na úhel $uhel °"
+//% block="nastav 180° $servo na úhel $uhel °"
 //% uhel.min=0 uhel.max=180 uhel.defl=90
 export function nastavPolohoveServo(servo: ServoNum = 1, uhel: number): void {
     const chipAddress = 0x40
@@ -374,7 +374,7 @@ export function nastavPolohoveServo(servo: ServoNum = 1, uhel: number): void {
  * @param servo Servo, které chceme ovládat; eg: Servo1
  * @param speed Rychlost v %, záporná pro zpětný chod; eg: 50
  */
-//% block="nastav kontinuální servo (360°) $servo na rychlost $speed %%"
+//% block="nastav 360° $servo na rychlost $speed %%"
 //% speed.min=-100 speed.max=100 speed.defl=0
 export function nastavKontinualniServo(servo: ServoNum = 1, speed: number): void {
     const chipAddress = 0x40
@@ -463,5 +463,69 @@ export function reset(): void {
 
     export function setDebug(debugEnabled: boolean): void {
         _DEBUG = debugEnabled
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Bloky pro ovládání motorů přes H-můstek MX1508 (piny 13–16)
+ */
+//% color=#000000 icon="" block="Motory"
+namespace mBitBeamMotory {
+
+    export enum Motor {
+        Motor1 = 1,
+        Motor2 = 2
+    }
+
+    export enum Smer {
+        Dopredu = 0,
+        Dozadu = 1
+    }
+
+    /**
+     * Otáčí motorem požadovaným směrem a rychlostí (0–100 %)
+     * @param motor Motor, který chceme ovládat; eg: Motor.Motor1
+     * @param smer Směr otáčení; eg: Smer.Dopredu
+     * @param rychlost Rychlost 0–100 %; eg: 50
+     */
+    //% block="motor $motor otáčej $smer rychlostí $rychlost %"
+    //% rychlost.min=0 rychlost.max=100 rychlost.defl=50
+    export function otacejMotor(motor: Motor, smer: Smer, rychlost: number): void {
+        rychlost = Math.max(0, Math.min(100, rychlost))
+        const analog = Math.map(rychlost, 0, 100, 0, 1023)
+
+        if (motor == Motor.Motor1) {
+            pins.digitalWritePin(DigitalPin.P13, smer == Smer.Dopredu ? 0 : 1)
+            pins.analogWritePin(AnalogPin.P14, analog)
+        } else {
+            pins.digitalWritePin(DigitalPin.P15, smer == Smer.Dopredu ? 0 : 1)
+            pins.analogWritePin(AnalogPin.P16, analog)
+        }
+    }
+
+    /**
+     * Otáčí motorem daným směrem a rychlostí po zadanou dobu (v sekundách)
+     * @param motor Motor, který chceme ovládat; eg: Motor.Motor1
+     * @param smer Směr otáčení; eg: Smer.Dopredu
+     * @param rychlost Rychlost 0–100 %; eg: 75
+     * @param sekundy Počet sekund; eg: 2
+     */
+    //% block="motor $motor otáčej $smer rychlostí $rychlost % po dobu $sekundy sekundy"
+    //% rychlost.min=0 rychlost.max=100 rychlost.defl=75
+    //% sekundy.min=0 sekundy.defl=2
+    export function otacejMotorCasove(motor: Motor, smer: Smer, rychlost: number, sekundy: number): void {
+        otacejMotor(motor, smer, rychlost)
+        basic.pause(sekundy * 1000)
+        otacejMotor(motor, smer, 0)
     }
 }
