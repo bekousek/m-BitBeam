@@ -354,7 +354,7 @@ namespace mBitBeam {
      * @param servoNum The number (1-16) of the servo to move
      * @param degrees The degrees (0-180) to move the servo to
      */
-    //% block
+   //% block="nastav rotační servo (180°) $servo do polohy $degrees %%"
     export function setServoPosition(servoNum: ServoNum = 1, degrees: number, chipAddress: number = 0x40): void {
         const chip = getChipConfig(chipAddress)
         servoNum = Math.max(1, Math.min(16, servoNum))
@@ -376,7 +376,7 @@ namespace mBitBeam {
  * @param servo Servo, které chceme ovládat; eg: Servo1
  * @param speed Rychlost v %, záporná pro zpětný chod; eg: 50
  */
-//% block="nastav kontinuální servo $servo na rychlost $speed %%"
+//% block="nastav kontinuální servo (360°) $servo na rychlost $speed %%"
 //% speed.min=-100 speed.max=100 speed.defl=0
 export function nastavKontinualniServo(servo: ServoNum = 1, speed: number): void {
     const chipAddress = 0x40
