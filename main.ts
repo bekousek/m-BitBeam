@@ -305,51 +305,7 @@ namespace mBitBeam {
         return ((offset * 1000) / (1000 / freq) * chipResolution) / 10000
     }
 
-    /**
-     * Used to set the pulse range (0-4095) of a given pin on the PCA9685
-     * @param chipAddress [64-125] The I2C address of your PCA9685; eg: 64
-     * @param pinNumber The pin number (0-15) to set the pulse range on
-     * @param onStep The range offset (0-4095) to turn the signal on
-     * @param offStep The range offset (0-4095) to turn the signal off
-     */
-    //% block advanced=true
-    export function setPinPulseRange(pinNumber: PinNum = 0, onStep: number = 0, offStep: number = 2048, chipAddress: number = 0x40): void {
-        pinNumber = Math.max(0, Math.min(15, pinNumber))
-        const buffer = pins.createBuffer(2)
-        const pinOffset = PinRegDistance * pinNumber
-        onStep = Math.max(0, Math.min(4095, onStep))
-        offStep = Math.max(0, Math.min(4095, offStep))
-
-        debug(`setPinPulseRange(${pinNumber}, ${onStep}, ${offStep}, ${chipAddress})`)
-        debug(`  pinOffset ${pinOffset}`)
-
-        // Low byte of onStep
-        write(chipAddress, pinOffset + channel0OnStepLowByte, onStep & 0xFF)
-
-        // High byte of onStep
-        write(chipAddress, pinOffset + channel0OnStepHighByte, (onStep >> 8) & 0x0F)
-
-        // Low byte of offStep
-        write(chipAddress, pinOffset + channel0OffStepLowByte, offStep & 0xFF)
-
-        // High byte of offStep
-        write(chipAddress, pinOffset + channel0OffStepHighByte, (offStep >> 8) & 0x0F)
-    }
-
-    /**
-     * Used to set the duty cycle (0-100) of a given led connected to the PCA9685
-     * @param chipAddress [64-125] The I2C address of your PCA9685; eg: 64
-     * @param ledNumber The number (1-16) of the LED to set the duty cycle on
-     * @param dutyCycle The duty cycle (0-100) to set the LED to
-     */
-    //% block
-    export function setLedDutyCycle(ledNum: LEDNum = 1, dutyCycle: number, chipAddress: number = 0x40): void {
-        ledNum = Math.max(1, Math.min(16, ledNum))
-        dutyCycle = Math.max(0, Math.min(100, dutyCycle))
-        const pwm = (dutyCycle * (chipResolution - 1)) / 100
-        debug(`setLedDutyCycle(${ledNum}, ${dutyCycle}, ${chipAddress})`)
-        return setPinPulseRange(ledNum - 1, 0, pwm, chipAddress)
-    }
+   
 
     function degrees180ToPWM(freq: number, degrees: number, offsetStart: number, offsetEnd: number): number {
         // Calculate the offset of the off point in the freq
@@ -391,33 +347,37 @@ namespace mBitBeam {
      * @param speed [-100-100] The speed (-100-100) to turn the servo at
      */
     //% block
-    export function setCRServoPosition(servoNum: ServoNum = 1, speed: number, chipAddress: number = 0x40): void {
-        debug(`setCRServoPosition(${servoNum}, ${speed}, ${chipAddress})`)
-        const chip = getChipConfig(chipAddress)
-        const freq = chip.freq
-        servoNum = Math.max(1, Math.min(16, servoNum))
-        const servo: ServoConfig = chip.servos[servoNum - 1]
-        const offsetStart = calcFreqOffset(freq, servo.minOffset)
-        const offsetMid = calcFreqOffset(freq, servo.midOffset)
-        const offsetEnd = calcFreqOffset(freq, servo.maxOffset)
-        if (speed === 0) {
-            return setPinPulseRange(servo.pinNumber, 0, offsetMid, chipAddress)
-        }
-        const isReverse: boolean = speed < 0
-        debug(isReverse ? 'Reverse' : 'Forward')
-        const spread = isReverse ? offsetMid - offsetStart : offsetEnd - offsetMid
-        debug(`Spread ${spread}`)
-        servo.position = speed
-        speed = Math.abs(speed)
-        const calcOffset: number = ((speed * spread) / 100)
-        debug(`Offset ${calcOffset}`)
-        debug(`min ${offsetStart}`)
-        debug(`mid ${offsetMid}`)
-        debug(`max ${offsetEnd}`)
-        const pwm = isReverse ? offsetMid - calcOffset : offsetMid + calcOffset
-        debug(`pwm ${pwm}`)
-        return setPinPulseRange(servo.pinNumber, 0, pwm, chipAddress)
+ /**
+ * Nastaví kontinuální servo na danou rychlost (-100 až 100 %) na adrese 0x40
+ * @param servo Servo, které chceme ovládat; eg: Servo1
+ * @param speed Rychlost v %, záporná pro zpětný chod; eg: 50
+ */
+//% block="nastav kontinuální servo $servo na rychlost $speed %%"
+//% speed.min=-100 speed.max=100 speed.defl=0
+export function nastavKontinualniServo(servo: ServoNum = 1, speed: number): void {
+    const chipAddress = 0x40
+    const chip = getChipConfig(chipAddress)
+    const freq = chip.freq
+    servo = Math.max(1, Math.min(16, servo))
+    const servoObj: ServoConfig = chip.servos[servo - 1]
+    const offsetStart = calcFreqOffset(freq, servoObj.minOffset)
+    const offsetMid = calcFreqOffset(freq, servoObj.midOffset)
+    const offsetEnd = calcFreqOffset(freq, servoObj.maxOffset)
+
+    if (speed === 0) {
+        return setPinPulseRange(servoObj.pinNumber, 0, offsetMid, chipAddress)
     }
+
+    const isReverse: boolean = speed < 0
+    const spread = isReverse ? offsetMid - offsetStart : offsetEnd - offsetMid
+    servoObj.position = speed
+    speed = Math.abs(speed)
+    const calcOffset: number = ((speed * spread) / 100)
+    const pwm = isReverse ? offsetMid - calcOffset : offsetMid + calcOffset
+
+    return setPinPulseRange(servoObj.pinNumber, 0, pwm, chipAddress)
+}
+
 
     /**
      * Used to set the range in centiseconds (milliseconds * 10) for the pulse width to control the connected servo
