@@ -148,7 +148,7 @@ let buttonStates: { [key: string]: boolean } = {
 }
 
 radio.onReceivedValue(function (name: string, value: number) {
-    if (name in buttonStates) {
+    if (buttonStates.hasOwnProperty(name)) {
         buttonStates[name] = value === 1
     }
 })
