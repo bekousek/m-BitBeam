@@ -1,8 +1,8 @@
 /**
  * Bloky pro ovládání serva
  */
-//% weight=100 color=#000000 icon="" block="Serva"
-namespace mBitBeamServa {
+//% weight=100 color=#000000 icon="" block="m-BitBeam"
+namespace mBitBeam {
     let _DEBUG: boolean = false
     const debug = (msg: string) => {
         if (_DEBUG === true) {
