@@ -148,10 +148,17 @@ let buttonStates: { [key: string]: boolean } = {
 }
 
 radio.onReceivedValue(function (name: string, value: number) {
-    if (buttonStates.hasOwnProperty(name)) {
-        buttonStates[name] = value === 1
+    if (name == "btn-A") {
+        buttonStates["btn-A"] = value === 1
+    } else if (name == "btn-B") {
+        buttonStates["btn-B"] = value === 1
+    } else if (name == "btn-AB") {
+        buttonStates["btn-AB"] = value === 1
+    } else if (name == "btn-LOGO") {
+        buttonStates["btn-LOGO"] = value === 1
     }
 })
+
 
 /**
  * Při držení tlačítka opakuj kód dokud je tlačítko stisknuté.
