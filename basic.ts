@@ -23,7 +23,7 @@ namespace mbitbasic {
 
     let handlers: { [key: string]: () => void } = {}
 
-   //% group="ovladač"
+//% group="ovladač"
 //% block="nastav roli na ovladač a kanál rádia na %channel"
 //% channel.min=0 channel.max=255
 //% weight=100
@@ -31,34 +31,38 @@ export function setupController(channel: number): void {
     radio.setGroup(channel)
     radio.setTransmitPower(7)
 
-    input.onButtonPressed(Button.A, function () {
-        radio.sendValue("btn-A", 1)
-    })
-    input.onButtonReleased(Button.A, function () {
-        radio.sendValue("btn-A", 0)
-    })
+    let prevA = false
+    let prevB = false
+    let prevAB = false
+    let prevLogo = false
 
-    input.onButtonPressed(Button.B, function () {
-        radio.sendValue("btn-B", 1)
-    })
-    input.onButtonReleased(Button.B, function () {
-        radio.sendValue("btn-B", 0)
-    })
+    basic.forever(function () {
+        const a = input.buttonIsPressed(Button.A)
+        const b = input.buttonIsPressed(Button.B)
+        const ab = input.buttonIsPressed(Button.AB)
+        const logo = input.logoIsPressed()
 
-    input.onButtonPressed(Button.AB, function () {
-        radio.sendValue("btn-AB", 1)
-    })
-    input.onButtonReleased(Button.AB, function () {
-        radio.sendValue("btn-AB", 0)
-    })
+        if (a !== prevA) {
+            radio.sendValue("btn-A", a ? 1 : 0)
+            prevA = a
+        }
+        if (b !== prevB) {
+            radio.sendValue("btn-B", b ? 1 : 0)
+            prevB = b
+        }
+        if (ab !== prevAB) {
+            radio.sendValue("btn-AB", ab ? 1 : 0)
+            prevAB = ab
+        }
+        if (logo !== prevLogo) {
+            radio.sendValue("btn-LOGO", logo ? 1 : 0)
+            prevLogo = logo
+        }
 
-    input.onLogoEvent(TouchButtonEvent.Pressed, function () {
-        radio.sendValue("btn-LOGO", 1)
-    })
-    input.onLogoEvent(TouchButtonEvent.Released, function () {
-        radio.sendValue("btn-LOGO", 0)
+        basic.pause(20)
     })
 }
+
 
 
     //% group="mozek"
