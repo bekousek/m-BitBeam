@@ -1,7 +1,7 @@
 /**
  * mBitBeam
  */
-//% weight=100 color=#0fbc11 icon=""
+//% weight=100 color=#ffff00 icon=""
 namespace mBitBeam {
     let _DEBUG: boolean = false
     const debug = (msg: string) => {
