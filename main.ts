@@ -468,7 +468,7 @@ export function reset(): void {
     export function setDebug(debugEnabled: boolean): void {
         _DEBUG = debugEnabled
     }
-}
+
 
 
 
@@ -522,4 +522,6 @@ export function reset(): void {
         basic.pause(sekundy * 1000)
         otacejMotor(motor, smer, 0)
     }
+}
+
 }
