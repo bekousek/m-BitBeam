@@ -10,11 +10,11 @@ enum MBRemoteButton {
 }
 
 enum MBServoPin {
-    //% block="servo 0 (P0)"
+    //% block="Servo 0"
     P0 = AnalogPin.P0,
-    //% block="servo 1 (P1)"
+    //% block="Servo 1"
     P1 = AnalogPin.P1,
-    //% block="servo 2 (P2)"
+    //% block="Servo 2"
     P2 = AnalogPin.P2
 }
 
@@ -94,25 +94,50 @@ export function setupController(channel: number): void {
         handlers[key] = handler
     }
 
-    //% group="mozek"
-    //% block="nastav 360° %servo na rychlost %speed"
-    //% speed.min=-100 speed.max=100
-    //% weight=90
-    export function setContinuousServo(servo: MBServoPin, speed: number): void {
-        const minPulse = 1000
-        const maxPulse = 2000
-        const centerPulse = 1500
-        const pulse = centerPulse + (speed / 100) * (maxPulse - centerPulse)
-        pins.servoSetPulse(servo, pulse)
-    }
+let servoSpeedMap: { [pin: number]: number } = {}
+let servoAngleMap: { [pin: number]: number } = {}
 
-    //% group="mozek"
-    //% block="nastav 180° %servo na úhel %angle°"
-    //% angle.min=0 angle.max=180
-    //% weight=85
-    export function setStandardServo(servo: MBServoPin, angle: number): void {
-        pins.servoWritePin(servo, angle)
-    }
+//% group="mozek"
+//% block="nastav 360° %servo na rychlost %speed"
+//% speed.min=-100 speed.max=100
+//% weight=90
+export function setContinuousServo(servo: MBServoPin, speed: number): void {
+    const minPulse = 1000
+    const maxPulse = 2000
+    const centerPulse = 1500
+    const pulse = centerPulse + (speed / 100) * (maxPulse - centerPulse)
+    pins.servoSetPulse(servo, pulse)
+    servoSpeedMap[servo] = speed
+}
+
+//% group="mozek"
+//% block="nastav 180° %servo na úhel %angle°"
+//% angle.min=0 angle.max=180
+//% weight=85
+export function setStandardServo(servo: MBServoPin, angle: number): void {
+    pins.servoWritePin(servo, angle)
+    servoAngleMap[servo] = angle
+}
+
+//% group="mozek"
+//% block="změň rychlost 360° %servo o %delta"
+//% delta.min=-100 delta.max=100
+//% weight=84
+export function changeContinuousServoSpeed(servo: MBServoPin, delta: number): void {
+    let current = servoSpeedMap[servo] || 0
+    let next = Math.max(-100, Math.min(100, current + delta))
+    setContinuousServo(servo, next)
+}
+
+//% group="mozek"
+//% block="změň úhel 180° %servo o %delta°"
+//% delta.min=-180 delta.max=180
+//% weight=83
+export function changeStandardServoAngle(servo: MBServoPin, delta: number): void {
+    let current = servoAngleMap[servo] || 90
+    let next = Math.max(0, Math.min(180, current + delta))
+    setStandardServo(servo, next)
+}
 
 
 let buttonStates: { [key: string]: boolean } = {
