@@ -353,7 +353,8 @@ namespace mBitBeamServa {
  * @param servo Servo, které chceme natočit; eg: Servo1
  * @param uhel Úhel natočení v rozsahu 0–180°; eg: 90
  */
-//% block="nastav 180° $servo na úhel $uhel °"
+//% group="Serva"
+    //% block="nastav 180° $servo na úhel $uhel °"
 //% uhel.min=0 uhel.max=180 uhel.defl=90
 export function nastavPolohoveServo(servo: ServoNum = 1, uhel: number): void {
     const chipAddress = 0x40
@@ -374,6 +375,8 @@ export function nastavPolohoveServo(servo: ServoNum = 1, uhel: number): void {
  * @param servo Servo, které chceme ovládat; eg: Servo1
  * @param speed Rychlost v %, záporná pro zpětný chod; eg: 50
  */
+
+//% group="Serva"    
 //% block="nastav 360° $servo na rychlost $speed %%"
 //% speed.min=-100 speed.max=100 speed.defl=0
 export function nastavKontinualniServo(servo: ServoNum = 1, speed: number): void {
@@ -438,7 +441,8 @@ export function nastavKontinualniServo(servo: ServoNum = 1, speed: number): void
   /**
  * Provede úplný reset čipu PCA9685 a vypne všechny výstupy pro serva
  */
-//% block="resetuj čip pro serva"
+//% group="Serva"
+    //% block="resetuj čip pro serva"
 export function reset(): void {
     const chipAddress = 0x40
     return init(chipAddress, getChipConfig(chipAddress).freq);
@@ -470,18 +474,6 @@ export function reset(): void {
 
 
 
-
-
-
-
-
-
-/**
- * Bloky pro ovládání motorů přes H-můstek MX1508 (piny 13–16)
- */
-//% color=#000000 icon="" block="Motory"
-namespace mBitBeamMotory {
-
     export enum Motor {
         Motor1 = 1,
         Motor2 = 2
@@ -498,7 +490,8 @@ namespace mBitBeamMotory {
      * @param smer Směr otáčení; eg: Smer.Dopredu
      * @param rychlost Rychlost 0–100 %; eg: 50
      */
-    //% block="motor $motor otáčej $smer rychlostí $rychlost %"
+//% group="Motory"    
+//% block="motor $motor otáčej $smer rychlostí $rychlost %"
     //% rychlost.min=0 rychlost.max=100 rychlost.defl=50
     export function otacejMotor(motor: Motor, smer: Smer, rychlost: number): void {
         rychlost = Math.max(0, Math.min(100, rychlost))
@@ -520,7 +513,8 @@ namespace mBitBeamMotory {
      * @param rychlost Rychlost 0–100 %; eg: 75
      * @param sekundy Počet sekund; eg: 2
      */
-    //% block="motor $motor otáčej $smer rychlostí $rychlost % po dobu $sekundy sekundy"
+//% group="Motory"    
+//% block="motor $motor otáčej $smer rychlostí $rychlost % po dobu $sekundy sekundy"
     //% rychlost.min=0 rychlost.max=100 rychlost.defl=75
     //% sekundy.min=0 sekundy.defl=2
     export function otacejMotorCasove(motor: Motor, smer: Smer, rychlost: number, sekundy: number): void {
