@@ -581,7 +581,7 @@ let jednotka: Jednotka = Jednotka.cm
 
 
 
-        const TCS34725_ADDRESS = 0x29
+    const TCS34725_ADDRESS = 0x29
     const TCS34725_COMMAND_BIT = 0x80
     const TCS34725_ENABLE = 0x00
     const TCS34725_ENABLE_PON = 0x01
@@ -595,6 +595,8 @@ let jednotka: Jednotka = Jednotka.cm
     let red = 0
     let green = 0
     let blue = 0
+    let clear = 0
+    let posledniBarva = ""
 
     function i2cWriteTCS(reg: number, value: number) {
         let buf = pins.createBuffer(2)
@@ -639,9 +641,11 @@ let jednotka: Jednotka = Jednotka.cm
     export function nactiBarvu(): void {
         if (!tcsInitialized) initTCS34725()
 
+        clear = i2cRead16TCS(TCS34725_CDATAL)
         red = i2cRead16TCS(TCS34725_CDATAL + 2)
         green = i2cRead16TCS(TCS34725_CDATAL + 4)
         blue = i2cRead16TCS(TCS34725_CDATAL + 6)
+        posledniBarva = rozpoznanaBarva()
     }
 
     /**
@@ -672,6 +676,15 @@ let jednotka: Jednotka = Jednotka.cm
     }
 
     /**
+     * Vrátí intenzitu světla (clear kanál)
+     */
+    //% group="RGB senzor"
+    //% block="intenzita světla"
+    export function intenzitaSvetla(): number {
+        return clear
+    }
+
+    /**
      * Vrátí název barvy na základě RGB hodnot
      */
     //% group="RGB senzor"
@@ -681,22 +694,29 @@ let jednotka: Jednotka = Jednotka.cm
         const g = green
         const b = blue
 
-        if (r > 200 && g < 100 && b < 100) return "červená"
-        if (r < 100 && g > 200 && b < 100) return "zelená"
-        if (r < 100 && g < 100 && b > 200) return "modrá"
+        if (r > 220 && g < 100 && b < 100) return "červená"
+        if (r < 100 && g > 220 && b < 100) return "zelená"
+        if (r < 100 && g < 100 && b > 220) return "modrá"
         if (r > 200 && g > 200 && b < 100) return "žlutá"
-        if (r > 200 && g < 100 && b > 200) return "purpurová"
+        if (r > 200 && g < 100 && b > 200) return "fialová"
         if (r < 100 && g > 200 && b > 200) return "tyrkysová"
         if (r > 180 && g > 180 && b > 180) return "bílá"
         if (r < 50 && g < 50 && b < 50) return "černá"
-        if (r > 150 && g > 100 && b < 100) return "oranžová"
-        if (r > 150 && g < 50 && b < 50) return "tmavě červená"
-        if (r < 50 && g > 150 && b < 50) return "tmavě zelená"
-        if (r < 50 && g < 50 && b > 150) return "tmavě modrá"
-
-        return "neznámá"
+        if (r > 160 && g > 100 && b < 100) return "oranžová"
+        if (Math.abs(r - g) < 20 && Math.abs(g - b) < 20 && r > 80 && r < 180) return "šedá"
+        if (r > g && g > b && r > 100 && g > 70 && b < 50) return "hnědá"
+        return "černá"
     }
 
+    /**
+     * Blok podmínky: pokud barva je...
+     * @param barva text s názvem barvy; eg: "červená"
+     */
+    //% group="RGB senzor"
+    //% block="pokud rozpoznaná barva je %barva"
+    export function jeBarva(barva: string): boolean {
+        return posledniBarva == barva
+    }
 
     
 
