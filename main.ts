@@ -526,18 +526,18 @@ export function reset(): void {
 
 
 
-    let trigPin: DigitalPin = DigitalPin.P1
-    let echoPin: DigitalPin = DigitalPin.P2
-    let jednotka: Jednotka = Jednotka.cm
+  export enum Jednotka {
+    //% block="centimetry"
+    cm,
+    //% block="milimetry"
+    mm,
+    //% block="mikrosekundy"
+    us
+}
 
-    export enum Jednotka {
-        //% block="centimetry"
-        cm,
-        //% block="milimetry"
-        mm,
-        //% block="mikrosekundy"
-        us
-    }
+let trigPin: DigitalPin = DigitalPin.P1
+let echoPin: DigitalPin = DigitalPin.P2
+let jednotka: Jednotka = Jednotka.cm
 
     /**
      * Nastaví sonar (trig, echo a jednotku měření)
