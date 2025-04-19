@@ -348,28 +348,26 @@ namespace mBitBeam {
         return Math.max(offsetStart, Math.min(offsetEnd, calcOffset))
     }
 
-    /**
-     * Used to move the given servo to the specified degrees (0-180) connected to the PCA9685
-     * @param chipAddress [64-125] The I2C address of your PCA9685; eg: 64
-     * @param servoNum The number (1-16) of the servo to move
-     * @param degrees The degrees (0-180) to move the servo to
-     */
-   //% block="nastav rotační servo (180°) $servo do polohy $degrees %%"
-    export function setServoPosition(servoNum: ServoNum = 1, degrees: number, chipAddress: number = 0x40): void {
-        const chip = getChipConfig(chipAddress)
-        servoNum = Math.max(1, Math.min(16, servoNum))
-        degrees = Math.max(0, Math.min(180, degrees))
-        const servo: ServoConfig = chip.servos[servoNum - 1]
-        const pwm = degrees180ToPWM(chip.freq, degrees, servo.minOffset, servo.maxOffset)
-        servo.position = degrees
-        debug(`setServoPosition(${servoNum}, ${degrees}, ${chipAddress})`)
-        debug(`  servo.pinNumber ${servo.pinNumber}`)
-        debug(`  servo.minOffset ${servo.minOffset}`)
-        debug(`  servo.maxOffset ${servo.maxOffset}`)
-        debug(`  pwm ${pwm}`)
-        servo.debug()
-        return setPinPulseRange(servo.pinNumber, 0, pwm, chipAddress)
-    }
+  /**
+ * Nastaví polohové servo (0–180°) připojené k PCA9685 na adrese 0x40
+ * @param servo Servo, které chceme natočit; eg: Servo1
+ * @param uhel Úhel natočení v rozsahu 0–180°; eg: 90
+ */
+//% block="nastav servo $servo na úhel $uhel °"
+//% uhel.min=0 uhel.max=180 uhel.defl=90
+export function nastavPolohoveServo(servo: ServoNum = 1, uhel: number): void {
+    const chipAddress = 0x40
+    const chip = getChipConfig(chipAddress)
+    servo = Math.max(1, Math.min(16, servo))
+    uhel = Math.max(0, Math.min(180, uhel))
+
+    const servoObj: ServoConfig = chip.servos[servo - 1]
+    const pwm = degrees180ToPWM(chip.freq, uhel, servoObj.minOffset, servoObj.maxOffset)
+
+    servoObj.position = uhel
+    return setPinPulseRange(servoObj.pinNumber, 0, pwm, chipAddress)
+}
+
 
 /**
  * Nastaví kontinuální servo na danou rychlost (-100 až 100 %) na adrese 0x40
