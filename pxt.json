@@ -1,6 +1,6 @@
 {
   "name": "m-BitBeam",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Rozšíření pro ovládání PCA9685 a H-můstků pro mBitBeam",
   "dependencies": {
     "core": "*"
