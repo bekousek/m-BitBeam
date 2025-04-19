@@ -559,7 +559,7 @@ export function reset(): void {
     //% group="Sonar"
     //% block="vzdálenost"
     export function vzdalenost(): number {
-        pins.setPull(echoPin, PinPull.PullNone)
+        pins.setPull(echoPin, PinPullMode.PullNone)
         pins.digitalWritePin(trigPin, 0)
         control.waitMicros(2)
         pins.digitalWritePin(trigPin, 1)
