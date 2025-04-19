@@ -1,7 +1,7 @@
 /**
  * mBitBeam
  */
-//% weight=100 color=#dcce25 icon=""
+//% weight=100 color=#000000 icon=""
 namespace mBitBeam {
     let _DEBUG: boolean = false
     const debug = (msg: string) => {
@@ -349,7 +349,7 @@ namespace mBitBeam {
     }
 
   /**
- * Nastaví polohové servo (0–180°) připojené k PCA9685 na adrese 0x40
+ * Nastaví polohové servo (0–180°) 
  * @param servo Servo, které chceme natočit; eg: Servo1
  * @param uhel Úhel natočení v rozsahu 0–180°; eg: 90
  */
@@ -370,7 +370,7 @@ export function nastavPolohoveServo(servo: ServoNum = 1, uhel: number): void {
 
 
 /**
- * Nastaví kontinuální servo na danou rychlost (-100 až 100 %) na adrese 0x40
+ * Nastaví kontinuální servo na danou rychlost (-100 až 100 %)
  * @param servo Servo, které chceme ovládat; eg: Servo1
  * @param speed Rychlost v %, záporná pro zpětný chod; eg: 50
  */
